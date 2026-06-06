@@ -5,9 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import com.example.footballstore.data.datasource.FakeCategoryDataSource
 import com.example.footballstore.data.datasource.FakeProductDataSource
 import com.example.footballstore.data.repository.CategoryRepositoryImpl
@@ -49,13 +46,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FootballStoreTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AppNavGraph(
-                        productViewModel = productViewModel,
-                        categoryViewModel = categoryViewModel,
-                        innerPadding = innerPadding
-                    )
-                }
+                AppNavGraph(
+                    productViewModel = productViewModel,
+                    categoryViewModel = categoryViewModel
+                )
             }
         }
     }

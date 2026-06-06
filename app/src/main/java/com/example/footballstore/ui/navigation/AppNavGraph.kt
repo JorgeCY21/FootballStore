@@ -1,6 +1,9 @@
 package com.example.footballstore.ui.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -26,6 +29,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.footballstore.ui.theme.CarbonBlack
+import com.example.footballstore.ui.theme.ChalkWhite
+import com.example.footballstore.ui.theme.FieldGreen
+import com.example.footballstore.ui.theme.GoalGray
 import com.example.footballstore.ui.screens.cart.CartScreen
 import com.example.footballstore.ui.screens.category.CategoryShopScreen
 import com.example.footballstore.ui.screens.product.ProductDetailScreen
@@ -43,7 +50,6 @@ private data class BottomNavItem(
 fun AppNavGraph(
     productViewModel: ProductViewModel,
     categoryViewModel: CategoryViewModel,
-    innerPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -60,8 +66,14 @@ fun AppNavGraph(
     Scaffold(
         modifier = modifier,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        contentWindowInsets = WindowInsets.safeDrawing.only(androidx.compose.foundation.layout.WindowInsetsSides.Horizontal),
         bottomBar = {
-            BottomAppBar {
+            BottomAppBar(
+                containerColor = CarbonBlack,
+                contentColor = ChalkWhite,
+                tonalElevation = 0.dp,
+                windowInsets = WindowInsets.navigationBars
+            ) {
                 bottomItems.forEach { item ->
                     val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
                     NavigationBarItem(
@@ -77,7 +89,13 @@ fun AppNavGraph(
                         },
                         icon = { Icon(item.icon, contentDescription = item.label) },
                         label = { Text(item.label) },
-                        colors = NavigationBarItemDefaults.colors()
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = ChalkWhite,
+                            selectedTextColor = ChalkWhite,
+                            indicatorColor = FieldGreen,
+                            unselectedIconColor = GoalGray,
+                            unselectedTextColor = GoalGray
+                        )
                     )
                 }
             }
@@ -93,21 +111,31 @@ fun AppNavGraph(
                     productViewModel = productViewModel,
                     onNavigateToDetail = { navController.navigate(Routes.productDetail(it)) },
                     snackbarHostState = snackbarHostState,
-                    innerPadding = mergePadding(innerPadding, scaffoldPadding)
+                    innerPadding = scaffoldPadding
                 )
             }
             composable(Routes.CATEGORY_SHOP) {
                 CategoryShopScreen(
                     categoryViewModel = categoryViewModel,
                     productViewModel = productViewModel,
-                    innerPadding = mergePadding(innerPadding, scaffoldPadding)
+                    onOpenCategory = { categoryId ->
+                        productViewModel.onCategorySelected(categoryId)
+                        navController.navigate(Routes.PRODUCT_LIST) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    innerPadding = scaffoldPadding
                 )
             }
             composable(Routes.CART) {
                 CartScreen(
                     productViewModel = productViewModel,
                     snackbarHostState = snackbarHostState,
-                    innerPadding = mergePadding(innerPadding, scaffoldPadding)
+                    innerPadding = scaffoldPadding
                 )
             }
             composable(
@@ -124,21 +152,9 @@ fun AppNavGraph(
                         }
                     },
                     snackbarHostState = snackbarHostState,
-                    innerPadding = mergePadding(innerPadding, scaffoldPadding)
+                    innerPadding = scaffoldPadding
                 )
             }
         }
     }
-}
-
-private fun mergePadding(
-    outerPadding: PaddingValues,
-    innerPadding: PaddingValues
-): PaddingValues {
-    return PaddingValues(
-        start = 0.dp,
-        top = outerPadding.calculateTopPadding() + innerPadding.calculateTopPadding(),
-        end = 0.dp,
-        bottom = outerPadding.calculateBottomPadding() + innerPadding.calculateBottomPadding()
-    )
 }

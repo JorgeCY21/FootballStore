@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,7 +28,6 @@ import com.example.footballstore.ui.components.ProductCard
 import com.example.footballstore.ui.state.ProductUiState
 import com.example.footballstore.viewmodel.ProductViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreen(
     productViewModel: ProductViewModel,
@@ -56,24 +54,26 @@ fun ProductListScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(innerPadding)
     ) {
-        TopAppBar(
-            title = {
-                Column {
-                    Text("Football Store", fontWeight = FontWeight.Bold)
-                    Text(
-                        "Encuentra camisetas, botines y accesorios para tu proximo partido",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-        )
-
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Column(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Text(
+                "Football Store",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.ExtraBold
+            )
+            Text(
+                "Encuentra camisetas, botines y accesorios para tu proximo partido",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp)
+            )
             FootballSearchBar(
                 query = query,
                 onQueryChange = productViewModel::onSearchQueryChange,
-                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp)
+                modifier = Modifier.padding(top = 14.dp, bottom = 12.dp)
             )
             CategoryFilterChips(
                 categories = categories,
@@ -95,7 +95,7 @@ fun ProductListScreen(
                 is ProductUiState.Success -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 120.dp),
+                        contentPadding = PaddingValues(top = 10.dp, bottom = 120.dp),
                         verticalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
                         items(state.products, key = { it.id }) { product ->

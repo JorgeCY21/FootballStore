@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.footballstore.data.model.Category
 
@@ -27,7 +28,7 @@ fun CategoryFilterChips(
         FilterChip(
             selected = selectedCategoryId == null,
             onClick = { onCategorySelected(null) },
-            label = { Text("Todas") },
+            label = { Text("Todas", fontWeight = FontWeight.Medium) },
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
             )
@@ -35,8 +36,12 @@ fun CategoryFilterChips(
         categories.forEach { category ->
             FilterChip(
                 selected = selectedCategoryId == category.id,
-                onClick = { onCategorySelected(category.id) },
-                label = { Text(category.name) },
+                onClick = {
+                    onCategorySelected(
+                        if (selectedCategoryId == category.id) null else category.id
+                    )
+                },
+                label = { Text(category.name, fontWeight = FontWeight.Medium) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
                 )
