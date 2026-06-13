@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.footballstore.ui.components.EmptyState
 import com.example.footballstore.ui.components.ProductForm
+import com.example.footballstore.presentation.products.ProductViewModel
 import com.example.footballstore.viewmodel.CategoryViewModel
-import com.example.footballstore.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,11 +67,12 @@ fun ProductEditScreen(
         ProductForm(
             categories = categories,
             submitLabel = "Actualizar producto",
-            onSubmit = { name, price, description, imageUrl, categoryId ->
+            onSubmit = { name, price, stock, description, imageUrl, categoryId ->
                 val updated = productViewModel.updateProduct(
                     id = product.id,
                     name = name,
                     price = price,
+                    stock = stock,
                     description = description,
                     imageUrl = imageUrl,
                     categoryId = categoryId
@@ -84,6 +85,7 @@ fun ProductEditScreen(
             modifier = Modifier.padding(16.dp),
             initialName = product.name,
             initialPrice = product.price.toString(),
+            initialStock = product.stock.toString(),
             initialDescription = product.description,
             initialImageUrl = product.imageUrl,
             initialCategoryId = product.categoryId

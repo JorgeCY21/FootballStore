@@ -19,8 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.activity.ComponentActivity
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -37,8 +40,8 @@ import com.example.footballstore.ui.screens.cart.CartScreen
 import com.example.footballstore.ui.screens.category.CategoryShopScreen
 import com.example.footballstore.ui.screens.product.ProductDetailScreen
 import com.example.footballstore.ui.screens.product.ProductListScreen
+import com.example.footballstore.presentation.products.ProductViewModel
 import com.example.footballstore.viewmodel.CategoryViewModel
-import com.example.footballstore.viewmodel.ProductViewModel
 
 private data class BottomNavItem(
     val route: String,
@@ -48,10 +51,11 @@ private data class BottomNavItem(
 
 @Composable
 fun AppNavGraph(
-    productViewModel: ProductViewModel,
-    categoryViewModel: CategoryViewModel,
     modifier: Modifier = Modifier
 ) {
+    val activity = LocalContext.current as ComponentActivity
+    val productViewModel: ProductViewModel = hiltViewModel(activity)
+    val categoryViewModel: CategoryViewModel = hiltViewModel(activity)
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -108,7 +112,6 @@ fun AppNavGraph(
         ) {
             composable(Routes.PRODUCT_LIST) {
                 ProductListScreen(
-                    productViewModel = productViewModel,
                     onNavigateToDetail = { navController.navigate(Routes.productDetail(it)) },
                     snackbarHostState = snackbarHostState,
                     innerPadding = scaffoldPadding

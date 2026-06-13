@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.footballstore.data.model.Product
+import com.example.footballstore.domain.model.Product
 
 @Composable
 fun ProductCard(
@@ -75,6 +75,11 @@ fun ProductCard(
                         text = categoryName,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Stock: ${product.stock}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Box(

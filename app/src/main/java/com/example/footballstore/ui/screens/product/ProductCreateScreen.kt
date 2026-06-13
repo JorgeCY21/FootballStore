@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.footballstore.ui.components.ProductForm
+import com.example.footballstore.presentation.products.ProductViewModel
 import com.example.footballstore.viewmodel.CategoryViewModel
-import com.example.footballstore.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,10 +61,11 @@ fun ProductCreateScreen(
         ProductForm(
             categories = categories,
             submitLabel = "Guardar producto",
-            onSubmit = { name, price, description, imageUrl, categoryId ->
+            onSubmit = { name, price, stock, description, imageUrl, categoryId ->
                 val saved = productViewModel.addProduct(
                     name = name,
                     price = price,
+                    stock = stock,
                     description = description,
                     imageUrl = imageUrl,
                     categoryId = categoryId

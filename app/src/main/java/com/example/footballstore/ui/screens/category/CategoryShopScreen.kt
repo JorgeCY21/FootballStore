@@ -21,12 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.footballstore.presentation.products.ProductViewModel
 import com.example.footballstore.ui.components.EmptyState
 import com.example.footballstore.ui.components.ErrorState
 import com.example.footballstore.ui.components.LoadingState
 import com.example.footballstore.ui.state.CategoryUiState
 import com.example.footballstore.viewmodel.CategoryViewModel
-import com.example.footballstore.viewmodel.ProductViewModel
 
 @Composable
 fun CategoryShopScreen(

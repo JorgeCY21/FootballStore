@@ -38,7 +38,7 @@ import com.example.footballstore.ui.components.ErrorState
 import com.example.footballstore.ui.components.LoadingState
 import com.example.footballstore.ui.state.CategoryUiState
 import com.example.footballstore.viewmodel.CategoryViewModel
-import com.example.footballstore.viewmodel.ProductViewModel
+import com.example.footballstore.presentation.products.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

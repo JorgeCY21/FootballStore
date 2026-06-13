@@ -28,16 +28,18 @@ import com.example.footballstore.data.model.Category
 fun ProductForm(
     categories: List<Category>,
     submitLabel: String,
-    onSubmit: (String, String, String, String, Int?) -> Boolean,
+    onSubmit: (String, String, String, String, String, Int?) -> Boolean,
     modifier: Modifier = Modifier,
     initialName: String = "",
     initialPrice: String = "",
+    initialStock: String = "",
     initialDescription: String = "",
     initialImageUrl: String = "",
     initialCategoryId: Int? = null
 ) {
     var name by rememberSaveable { mutableStateOf(initialName) }
     var price by rememberSaveable { mutableStateOf(initialPrice) }
+    var stock by rememberSaveable { mutableStateOf(initialStock) }
     var description by rememberSaveable { mutableStateOf(initialDescription) }
     var imageUrl by rememberSaveable { mutableStateOf(initialImageUrl) }
     var selectedCategoryId by rememberSaveable { mutableStateOf(initialCategoryId) }
@@ -64,6 +66,13 @@ fun ProductForm(
             onValueChange = { price = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Precio") },
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = stock,
+            onValueChange = { stock = it },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Stock") },
             singleLine = true
         )
         OutlinedTextField(
@@ -117,6 +126,7 @@ fun ProductForm(
                 onSubmit(
                     name,
                     price,
+                    stock,
                     description,
                     imageUrl,
                     selectedCategoryId

@@ -1,23 +1,27 @@
-package com.example.footballstore.viewmodel
+package com.example.footballstore.presentation.products
 
 import androidx.lifecycle.ViewModel
 import com.example.footballstore.data.model.CartItem
 import com.example.footballstore.data.model.Category
-import com.example.footballstore.data.model.Product
 import com.example.footballstore.data.repository.CategoryRepository
-import com.example.footballstore.data.repository.ProductRepository
-import com.example.footballstore.ui.state.ProductUiState
+import com.example.footballstore.domain.model.Product
+import com.example.footballstore.domain.repository.ProductRepository
+import com.example.footballstore.domain.usecase.GetProductsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class ProductViewModel(
+@HiltViewModel
+class ProductViewModel @Inject constructor(
+    private val getProductsUseCase: GetProductsUseCase,
     private val productRepository: ProductRepository,
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<ProductUiState>(ProductUiState.Loading)
+    private val _uiState = MutableStateFlow(ProductUiState(loading = true))
     val uiState: StateFlow<ProductUiState> = _uiState.asStateFlow()
 
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
@@ -41,22 +45,22 @@ class ProductViewModel(
     }
 
     fun loadProducts() {
-        _uiState.value = ProductUiState.Loading
+        _uiState.value = _uiState.value.copy(loading = true, error = null)
         runCatching {
-            productRepository.searchProducts(_searchQuery.value, _selectedCategoryId.value)
+            getProductsUseCase(_searchQuery.value, _selectedCategoryId.value)
         }.onSuccess { products ->
-            _uiState.value = if (products.isEmpty()) {
-                ProductUiState.Empty
-            } else {
-                ProductUiState.Success(
-                    products = products,
-                    query = _searchQuery.value,
-                    selectedCategoryId = _selectedCategoryId.value
-                )
-            }
+            _uiState.value = ProductUiState(
+                loading = false,
+                products = products,
+                query = _searchQuery.value,
+                selectedCategoryId = _selectedCategoryId.value
+            )
         }.onFailure { error ->
-            _uiState.value = ProductUiState.Error(
-                error.message ?: "No se pudo cargar el catalogo de productos."
+            _uiState.value = ProductUiState(
+                loading = false,
+                error = error.message ?: "No se pudo cargar el catalogo de productos.",
+                query = _searchQuery.value,
+                selectedCategoryId = _selectedCategoryId.value
             )
         }
     }
@@ -78,11 +82,12 @@ class ProductViewModel(
     fun addProduct(
         name: String,
         price: String,
+        stock: String,
         description: String,
         imageUrl: String,
         categoryId: Int?
     ): Boolean {
-        val validationMessage = validateProduct(name, price, description, imageUrl, categoryId)
+        val validationMessage = validateProduct(name, price, stock, description, imageUrl, categoryId)
         if (validationMessage != null) {
             _message.value = validationMessage
             return false
@@ -93,6 +98,7 @@ class ProductViewModel(
             id = newId,
             name = name.trim(),
             price = price.toDouble(),
+            stock = stock.toInt(),
             description = description.trim(),
             imageUrl = imageUrl.trim(),
             categoryId = categoryId ?: return false
@@ -108,11 +114,12 @@ class ProductViewModel(
         id: Int,
         name: String,
         price: String,
+        stock: String,
         description: String,
         imageUrl: String,
         categoryId: Int?
     ): Boolean {
-        val validationMessage = validateProduct(name, price, description, imageUrl, categoryId)
+        val validationMessage = validateProduct(name, price, stock, description, imageUrl, categoryId)
         if (validationMessage != null) {
             _message.value = validationMessage
             return false
@@ -122,6 +129,7 @@ class ProductViewModel(
             id = id,
             name = name.trim(),
             price = price.toDouble(),
+            stock = stock.toInt(),
             description = description.trim(),
             imageUrl = imageUrl.trim(),
             categoryId = categoryId ?: return false
@@ -150,19 +158,16 @@ class ProductViewModel(
     }
 
     fun applyFilters() {
-        val filteredProducts = productRepository.searchProducts(
+        val filteredProducts = getProductsUseCase(
             _searchQuery.value,
             _selectedCategoryId.value
         )
-        _uiState.value = if (filteredProducts.isEmpty()) {
-            ProductUiState.Empty
-        } else {
-            ProductUiState.Success(
-                products = filteredProducts,
-                query = _searchQuery.value,
-                selectedCategoryId = _selectedCategoryId.value
-            )
-        }
+        _uiState.value = ProductUiState(
+            loading = false,
+            products = filteredProducts,
+            query = _searchQuery.value,
+            selectedCategoryId = _selectedCategoryId.value
+        )
     }
 
     fun hasProductsInCategory(categoryId: Int): Boolean {
@@ -243,6 +248,7 @@ class ProductViewModel(
     private fun validateProduct(
         name: String,
         price: String,
+        stock: String,
         description: String,
         imageUrl: String,
         categoryId: Int?
@@ -251,6 +257,9 @@ class ProductViewModel(
         val parsedPrice = price.toDoubleOrNull()
             ?: return "El precio debe ser un numero valido."
         if (parsedPrice <= 0.0) return "El precio debe ser mayor a 0."
+        val parsedStock = stock.toIntOrNull()
+            ?: return "El stock debe ser un numero entero valido."
+        if (parsedStock < 0) return "El stock no puede ser negativo."
         if (description.isBlank()) return "La descripcion es obligatoria."
         if (imageUrl.isBlank()) return "La imagen del producto es obligatoria."
         if (categoryId == null) return "Debes seleccionar una categoria."

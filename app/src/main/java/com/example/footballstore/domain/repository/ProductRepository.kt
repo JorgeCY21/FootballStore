@@ -1,6 +1,6 @@
-package com.example.footballstore.data.repository
+package com.example.footballstore.domain.repository
 
-import com.example.footballstore.data.model.Product
+import com.example.footballstore.domain.model.Product
 
 interface ProductRepository {
     fun getProducts(): List<Product>
@@ -8,5 +8,4 @@ interface ProductRepository {
     fun addProduct(product: Product)
     fun updateProduct(product: Product)
     fun deleteProduct(id: Int)
-    fun searchProducts(query: String, categoryId: Int?): List<Product>
 }

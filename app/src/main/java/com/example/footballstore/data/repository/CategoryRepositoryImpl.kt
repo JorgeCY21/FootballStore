@@ -2,8 +2,9 @@ package com.example.footballstore.data.repository
 
 import com.example.footballstore.data.datasource.FakeCategoryDataSource
 import com.example.footballstore.data.model.Category
+import javax.inject.Inject
 
-class CategoryRepositoryImpl(
+class CategoryRepositoryImpl @Inject constructor(
     private val dataSource: FakeCategoryDataSource
 ) : CategoryRepository {
 

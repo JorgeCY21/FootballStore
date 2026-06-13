@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.footballstore.ui.components.CategoryForm
 import com.example.footballstore.ui.components.EmptyState
 import com.example.footballstore.viewmodel.CategoryViewModel
-import com.example.footballstore.viewmodel.ProductViewModel
+import com.example.footballstore.presentation.products.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

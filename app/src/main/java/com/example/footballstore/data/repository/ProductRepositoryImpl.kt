@@ -1,9 +1,11 @@
 package com.example.footballstore.data.repository
 
 import com.example.footballstore.data.datasource.FakeProductDataSource
-import com.example.footballstore.data.model.Product
+import com.example.footballstore.domain.model.Product
+import com.example.footballstore.domain.repository.ProductRepository
+import javax.inject.Inject
 
-class ProductRepositoryImpl(
+class ProductRepositoryImpl @Inject constructor(
     private val dataSource: FakeProductDataSource
 ) : ProductRepository {
 
@@ -21,13 +23,5 @@ class ProductRepositoryImpl(
 
     override fun deleteProduct(id: Int) {
         dataSource.deleteProduct(id)
-    }
-
-    override fun searchProducts(query: String, categoryId: Int?): List<Product> {
-        return dataSource.getProducts().filter { product ->
-            val matchesQuery = query.isBlank() || product.name.contains(query, ignoreCase = true)
-            val matchesCategory = categoryId == null || product.categoryId == categoryId
-            matchesQuery && matchesCategory
-        }
     }
 }

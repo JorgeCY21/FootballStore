@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.footballstore.ui.components.EmptyState
-import com.example.footballstore.viewmodel.ProductViewModel
+import com.example.footballstore.presentation.products.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +109,11 @@ fun ProductDetailScreen(
                 text = "S/ %.2f".format(product.price),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = "Stock disponible: ${product.stock} unidades",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.secondary
             )
             Text(
                 text = "Categoria: ${productViewModel.getCategoryName(product.categoryId)}",

@@ -1,8 +1,9 @@
 package com.example.footballstore.data.datasource
 
 import com.example.footballstore.data.model.Category
+import javax.inject.Inject
 
-class FakeCategoryDataSource {
+class FakeCategoryDataSource @Inject constructor() {
 
     private val categories = mutableListOf(
         Category(1, "Camisetas", "Camisetas oficiales y de entrenamiento para hinchas y jugadores."),

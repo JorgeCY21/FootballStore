@@ -24,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.footballstore.presentation.products.ProductViewModel
 import com.example.footballstore.ui.components.CartItemCard
 import com.example.footballstore.ui.components.EmptyState
-import com.example.footballstore.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

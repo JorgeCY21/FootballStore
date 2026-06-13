@@ -1,8 +1,9 @@
 package com.example.footballstore.data.datasource
 
-import com.example.footballstore.data.model.Product
+import com.example.footballstore.domain.model.Product
+import javax.inject.Inject
 
-class FakeProductDataSource {
+class FakeProductDataSource @Inject constructor() {
 
     private data class ProductSeed(
         val name: String,
@@ -16,6 +17,7 @@ class FakeProductDataSource {
             id = index + 1,
             name = seed.name,
             price = seed.price,
+            stock = 5 + (index % 18),
             description = buildDescription(seed.name, seed.categoryId),
             imageUrl = seed.imageUrl,
             categoryId = seed.categoryId
